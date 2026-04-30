@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News App</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="shortcut icon"
+      href="assets/images/Logo.png"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header class="Main-navbar">
+        <div class="Navbar-content">
+          <img src="assets/images/Logo.png" alt="Website logo" />
+          <nav class="navList">
+            <a href="#" data-category="general">Home</a>
+            <a href="#" data-category="politics">Politics</a>
+            <a href="#" data-category="finance">Finance</a>
+            <a href="#" data-category="sports">Sports</a>
+          </nav>
+
+          <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search news..." />
+            <button id="search-btn">Search</button>
+          </div>
+        </div>
+      </header>
+      <main>
+        <div id="news-container"></div>
+      </main>
+      <footer class="footer">
+        <div class="footer-container">
+          <div class="footer-left">
+            <h2>NewsPortal</h2>
+            <p>Your daily source of trusted news updates around the world.</p>
+          </div>
+
+          <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="#" data-category="general">Home</a></li>
+              <li><a href="#" data-category="politics">Politics</a></li>
+              <li><a href="#" data-category="finance">Finance</a></li>
+              <li><a href="#" data-category="sports">Sports</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-contact">
+            <h3>Contact</h3>
+            <p>Email: support@WCnews.com</p>
+            <p>Phone: +92 *** *******</p>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2025 WC News. All Rights Reserved.</p>
+        </div>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
