@@ -1,28 +1,18 @@
-const API_KEY = "ece1a2489c8dfdb48f1bc6fe06438f0f";
-const baseUrl = "https://gnews.io/api/v4";
 const PLACEHOLDER_IMG = "assets/images/placeholder.png";
 
 const newsContainer = document.getElementById("news-container");
 const searchInput = document.getElementById("search-input");
 const searchBtn = document.getElementById("search-btn");
 
-// GNews category map
-const CATEGORY_MAP = {
-  general: "general",
-  finance: "business",
-  sports: "sports",
-};
-
 // Fetch by category (Home, Finance, Sports, etc)
 async function fetchNews(category = "general") {
-  const gCategory = CATEGORY_MAP[category] || "general";
-  const url = `${baseUrl}/top-headlines?category=${gCategory}&lang=en&max=10&token=${API_KEY}`;
+  const url = `/api/news?category=${category}`;
   await renderNews(url);
 }
 
 // Search by query
 async function searchNews(query) {
-  const url = `${baseUrl}/search?q=${encodeURIComponent(query)}&lang=en&sortby=publishedAt&max=10&token=${API_KEY}`;
+  const url = `/api/news?q=${encodeURIComponent(query)}`;
   await renderNews(url);
 }
 
@@ -40,7 +30,7 @@ async function renderNews(url) {
       return;
     }
 
-    // GNews uses article.image instead of article.urlToImage
+    // GNews returns article.image
     data.articles.forEach((article) => {
       const card = document.createElement("div");
       card.classList.add("news-card");
