@@ -1,66 +1,55 @@
-const API_KEY = "20ba1478466f4c16b9a6f82b6ac8e45a";
-const baseUrl = "https://newsapi.org/v2";
+const API_KEY = "ece1a2489c8dfdb48f1bc6fe06438f0f";
+const baseUrl = "https://gnews.io/api/v4";
+const PLACEHOLDER_IMG = "assets/images/placeholder.png";
 
 const newsContainer = document.getElementById("news-container");
 const searchInput = document.getElementById("search-input");
 const searchBtn = document.getElementById("search-btn");
 
+// GNews category map
+const CATEGORY_MAP = {
+  general: "general",
+  finance: "business",
+  sports: "sports",
+};
+
 // Fetch by category (Home, Finance, Sports, etc)
 async function fetchNews(category = "general") {
-  let url = `${baseUrl}/top-headlines?country=pk&apiKey=${API_KEY}`;
-
-  if (category === "finance") {
-    url += `&category=business`;
-  } else if (category !== "general") {
-    url += `&category=${category}`;
-  }
-
-  await renderNews(url, category);
+  const gCategory = CATEGORY_MAP[category] || "general";
+  const url = `${baseUrl}/top-headlines?category=${gCategory}&lang=en&max=10&token=${API_KEY}`;
+  await renderNews(url);
 }
 
 // Search by query
 async function searchNews(query) {
-  let url = `${baseUrl}/everything?q=${query}&language=en&sortBy=publishedAt&apiKey=${API_KEY}`;
+  const url = `${baseUrl}/search?q=${encodeURIComponent(query)}&lang=en&sortby=publishedAt&max=10&token=${API_KEY}`;
   await renderNews(url);
 }
 
-//Render News
-async function renderNews(url, category = null) {
+// Render News
+async function renderNews(url) {
+  newsContainer.innerHTML = `<div class="loading-spinner"><div class="spinner"></div><p>Loading news...</p></div>`;
   try {
     const response = await fetch(url);
     const data = await response.json();
 
     newsContainer.innerHTML = "";
 
-    //If no news found, fallback to global
     if (!data.articles || data.articles.length === 0) {
-      console.warn("No local news, loading global...");
-
-      if (category) {
-        // Fallback global by language
-        let fallbackUrl = `${baseUrl}/top-headlines?language=en&apiKey=${API_KEY}`;
-        if (category === "finance") {
-          fallbackUrl += `&category=business`;
-        } else if (category !== "general") {
-          fallbackUrl += `&category=${category}`;
-        }
-        return renderNews(fallbackUrl);
-      }
-
       newsContainer.innerHTML = "<p>No news found.</p>";
       return;
     }
 
-    //Render NewsCards
+    // GNews uses article.image instead of article.urlToImage
     data.articles.forEach((article) => {
       const card = document.createElement("div");
       card.classList.add("news-card");
 
       card.innerHTML = `
-        <img src="${article.urlToImage || ""}" alt="News Image">
+        <img src="${article.image || PLACEHOLDER_IMG}" alt="News Image" onerror="this.src='${PLACEHOLDER_IMG}'">
         <h2>${article.title}</h2>
         <p>${article.description || "No description available."}</p>
-        <a href="${article.url}" target="_blank">Read more</a>
+        <a href="${article.url}" target="_blank" rel="noopener noreferrer">Read more</a>
       `;
       newsContainer.appendChild(card);
     });
@@ -69,8 +58,9 @@ async function renderNews(url, category = null) {
     newsContainer.innerHTML = "<p>Error loading news. Try again later.</p>";
   }
 }
-//Navigations logic
-document.querySelectorAll("nav a").forEach((link) => {
+
+// Navigation logic (nav + footer quick links)
+document.querySelectorAll("[data-category]").forEach((link) => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
     const category = e.target.getAttribute("data-category");
@@ -83,7 +73,7 @@ document.querySelectorAll("nav a").forEach((link) => {
   });
 });
 
-//Search Bar logic
+// Search bar logic
 searchBtn.addEventListener("click", () => {
   const query = searchInput.value.trim();
   if (query) searchNews(query);
@@ -96,5 +86,9 @@ searchInput.addEventListener("keypress", (e) => {
   }
 });
 
-//Default load(Home)
+// Default load (Home)
 fetchNews("general");
+
+// Dynamic copyright year
+document.querySelector(".footer-bottom p").innerHTML =
+  `&copy; ${new Date().getFullYear()} WC News. All Rights Reserved.`;
